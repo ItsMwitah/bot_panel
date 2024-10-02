@@ -1,7 +1,7 @@
 #!/bin/bash
 # izin
 dateFromServer=$(curl -v --insecure --silent https://google.com/ 2>&1 | grep Date | sed -e 's/< Date: //')
-biji=`date +"%Y-%m-%d" -d "$dateFromServer"`
+biji=$(date +"%Y-%m-%d" -d "$dateFromServer")
 #########################
 
 BURIQ () {
@@ -9,15 +9,15 @@ BURIQ () {
     data=( `cat /root/tmp | grep -E "^### " | awk '{print $2}'` )
     for user in "${data[@]}"
     do
-    exp=( `grep -E "^### $user" "/root/tmp" | awk '{print $3}'` )
-    d1=(`date -d "$exp" +%s`)
-    d2=(`date -d "$biji" +%s`)
-    exp2=$(( (d1 - d2) / 86400 ))
-    if [[ "$exp2" -le "0" ]]; then
-    echo $user > /etc/.$user.ini
-    else
-    rm -f /etc/.$user.ini > /dev/null 2>&1
-    fi
+        exp=( `grep -E "^### $user" "/root/tmp" | awk '{print $3}'` )
+        d1=(`date -d "$exp" +%s`)
+        d2=(`date -d "$biji" +%s`)
+        exp2=$(( (d1 - d2) / 86400 ))
+        if [[ "$exp2" -le "0" ]]; then
+            echo $user > /etc/.$user.ini
+        else
+            rm -f /etc/.$user.ini > /dev/null 2>&1
+        fi
     done
     rm -f /root/tmp
 }
@@ -28,95 +28,84 @@ echo $Name > /usr/local/etc/.$Name.ini
 CekOne=$(cat /usr/local/etc/.$Name.ini)
 
 Bloman () {
-if [ -f "/etc/.$Name.ini" ]; then
-CekTwo=$(cat /etc/.$Name.ini)
-    if [ "$CekOne" = "$CekTwo" ]; then
-        res="Expired"
+    if [ -f "/etc/.$Name.ini" ]; then
+        CekTwo=$(cat /etc/.$Name.ini)
+        if [ "$CekOne" = "$CekTwo" ]; then
+            res="Expired"
+        fi
     fi
-else
-res="Permission Accepted..."
-fi
 }
 
-PERMISSION () {
-    MYIP=$(curl -sS ipv4.icanhazip.com)
-    IZIN=$(curl -sS https://raw.githubusercontent.com/givpn/bot_panel/master/access | awk '{print $4}' | grep $MYIP)
-    if [ "$MYIP" = "$IZIN" ]; then
-    Bloman
-    else
-    res="Permission Denied!"
-    fi
-    BURIQ
-}
+BURIQ
 clear
 red='\e[1;31m'
 green='\e[0;32m'
 NC='\e[0m'
 green() { echo -e "\\033[32;1m${*}\\033[0m"; }
 red() { echo -e "\\033[31;1m${*}\\033[0m"; }
-PERMISSION
+
 if [ -f /home/needupdate ]; then
-red "Your script need to update first !"
-exit 0
+    red "Your script needs to update first!"
+    exit 0
 elif [ "$res" = "Permission Accepted..." ]; then
-echo -ne
+    echo -ne
 else
-red "Permission Denied!"
-exit 0
+    red "Permission Denied!"
+    exit 0
 fi
 
 [[ ! -f /usr/bin/jq ]] && {
-red "Downloading jq file!"
-wget -q --no-check-certificate "https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64" -O /usr/bin/jq
-chmod +x usr/bin/jq
+    red "Downloading jq file!"
+    wget -q --no-check-certificate "https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64" -O /usr/bin/jq
+    chmod +x /usr/bin/jq
 }
-dircreate() {
-[[ -d /etc/.maAsiss ]] || mkdir /etc/.maAsiss
-[[ -d /etc/.maAsiss/db_reseller ]] || mkdir /etc/.maAsiss/db_reseller
-[[ -d /etc/.maAsiss/info-user-ss ]] || mkdir /etc/.maAsiss/info-user-ss
-[[ -d /etc/.maAsiss/info-user-ssr ]] || mkdir /etc/.maAsiss/info-user-ssr
-[[ -d /etc/.maAsiss/info-user-sstp ]] || mkdir /etc/.maAsiss/info-user-sstp
-[[ -d /etc/.maAsiss/info-user-trgo ]] || mkdir /etc/.maAsiss/info-user-trgo
-[[ -d /etc/.maAsiss/info-user-trojan ]] || mkdir /etc/.maAsiss/info-user-trojan
-[[ -d /etc/.maAsiss/info-user-v2ray ]] || mkdir /etc/.maAsiss/info-user-v2ray
-[[ -d /etc/.maAsiss/info-user-vless ]] || mkdir /etc/.maAsiss/info-user-vless
-[[ -d /etc/.maAsiss/info-user-wg ]] || mkdir /etc/.maAsiss/info-user-wg
-[[ -d /etc/.maAsiss/info-users ]] || mkdir /etc/.maAsiss/info-users
-[[ -d /etc/.maAsiss/info-user-l2tp ]] || mkdir /etc/.maAsiss/info-user-l2tp
-[[ -d /etc/.maAsiss/info-user-pptp ]] || mkdir /etc/.maAsiss/info-user-pptp
-[[ -f /etc/.maAsiss/list_user ]] || touch /etc/.maAsiss/list_user
-[[ ! -f /etc/.maAsiss/res_token ]] && touch /etc/.maAsiss/res_token
-[[ ! -f /etc/.maAsiss/User_Generate_Token ]] && touch /etc/.maAsiss/User_Generate_Token
 
-[[ -f /etc/.maAsiss/price ]] || {
-cat <<-EOF >/etc/.maAsiss/price
-Price SSH : 1
-Price VMess : 1
-Price VLess : 1
-Price Trojan : 1
-Price Trojan-GO : 1
-Price Wireguard : 1
-Price Shadowsocks : 1
-Price Shadowsocks-R : 1
-Price SSTP : 1
-Price L2TP : 1
-Price PPTP : 1
-EOF
-}
+dircreate() {
+    [[ -d /etc/.maAsiss ]] || mkdir /etc/.maAsiss
+    [[ -d /etc/.maAsiss/db_reseller ]] || mkdir /etc/.maAsiss/db_reseller
+    [[ -d /etc/.maAsiss/info-user-ss ]] || mkdir /etc/.maAsiss/info-user-ss
+    [[ -d /etc/.maAsiss/info-user-ssr ]] || mkdir /etc/.maAsiss/info-user-ssr
+    [[ -d /etc/.maAsiss/info-user-sstp ]] || mkdir /etc/.maAsiss/info-user-sstp
+    [[ -d /etc/.maAsiss/info-user-trgo ]] || mkdir /etc/.maAsiss/info-user-trgo
+    [[ -d /etc/.maAsiss/info-user-trojan ]] || mkdir /etc/.maAsiss/info-user-trojan
+    [[ -d /etc/.maAsiss/info-user-v2ray ]] || mkdir /etc/.maAsiss/info-user-v2ray
+    [[ -d /etc/.maAsiss/info-user-vless ]] || mkdir /etc/.maAsiss/info-user-vless
+    [[ -d /etc/.maAsiss/info-user-wg ]] || mkdir /etc/.maAsiss/info-user-wg
+    [[ -d /etc/.maAsiss/info-users ]] || mkdir /etc/.maAsiss/info-users
+    [[ -d /etc/.maAsiss/info-user-l2tp ]] || mkdir /etc/.maAsiss/info-user-l2tp
+    [[ -d /etc/.maAsiss/info-user-pptp ]] || mkdir /etc/.maAsiss/info-user-pptp
+    [[ -f /etc/.maAsiss/list_user ]] || touch /etc/.maAsiss/list_user
+    [[ ! -f /etc/.maAsiss/res_token ]] && touch /etc/.maAsiss/res_token
+    [[ ! -f /etc/.maAsiss/User_Generate_Token ]] && touch /etc/.maAsiss/User_Generate_Token
+
+    [[ -f /etc/.maAsiss/price ]] || {
+    cat <<-EOF >/etc/.maAsiss/price
+    Price SSH : 1
+    Price VMess : 1
+    Price VLess : 1
+    Price Trojan : 1
+    Price Trojan-GO : 1
+    Price Wireguard : 1
+    Price Shadowsocks : 1
+    Price Shadowsocks-R : 1
+    Price SSTP : 1
+    Price L2TP : 1
+    Price PPTP : 1
+    EOF
+    }
 }
 
 fun_botOnOff() {
-dircreate
-        [[ ! -f /etc/.maAsiss/bot.conf ]] && {
-        echo -e "givpn Bot Panel Installer
-        "
+    dircreate
+    [[ ! -f /etc/.maAsiss/bot.conf ]] && {
+        echo -e "givpn Bot Panel Installer\n"
         [[ ! -f /root/ResBotAuth ]] && {
-        echo -ne "Input your Bot TOKEN : "
-        read bot_tkn
-        echo "Toket='$bot_tkn'" > /root/ResBotAuth
-        echo -ne "Input your Admin ID : "
-        read adm_ids
-        echo "Admin_ID=$adm_ids" >> /root/ResBotAuth
+            echo -ne "Input your Bot TOKEN : "
+            read bot_tkn
+            echo "Toket='$bot_tkn'" > /root/ResBotAuth
+            echo -ne "Input your Admin ID : "
+            read adm_ids
+            echo "Admin_ID=$adm_ids" >> /root/ResBotAuth
         }
         echo -ne "Username admin panel use '@' [Ex: @givpn] : "
         read admin_pnl
@@ -126,32 +115,32 @@ dircreate
         read limit_pnl
         [[ -z $limit_pnl ]] && limit_pnl="1"
         echo ""
-        echo -ne "Your name store [dafult: givpn-STORE] : "
+        echo -ne "Your name store [default: givpn-STORE] : "
         read store_pnl
         [[ -z $store_pnl ]] && store_pnl="givpn-STORE"
         echo ""
-cat <<-EOF >/etc/.maAsiss/bot.conf
-admin_panel : $admin_pnl
-limite_trial : $limit_pnl
-store_name : $store_pnl
-EOF
+        cat <<-EOF >/etc/.maAsiss/bot.conf
+        admin_panel : $admin_pnl
+        limite_trial : $limit_pnl
+        store_name : $store_pnl
+        EOF
         clear
         echo -e "Info...\n"
         fun_bot1() {
             [[ ! -e "/etc/.maAsiss/.Shellbtsss" ]] && {
-				wget -qO- https://raw.githubusercontent.com/givpn/bot_panel/master/ShellBot.sh >/etc/.maAsiss/.Shellbtsss
-			}
-			[[ "$(grep -wc "givpn_bot" "/etc/rc.local")" = '0' ]] && {
-			    sed -i '$ i\screen -dmS givpn_bot bbt' /etc/rc.local >/dev/null 2>&1
-			}
+                wget -qO- https://raw.githubusercontent.com/givpn/bot_panel/master/ShellBot.sh >/etc/.maAsiss/.Shellbtsss
+            }
+            [[ "$(grep -wc "givpn_bot" "/etc/rc.local")" = '0' ]] && {
+                sed -i '$ i\screen -dmS givpn_bot bbt' /etc/rc.local >/dev/null 2>&1
+            }
         }
         screen -dmS givpn_bot bbt >/dev/null 2>&1
         fun_bot1
         [[ $(ps x | grep "givpn_bot" | grep -v grep | wc -l) != '0' ]] && echo -e "\nBot successfully activated !" || echo -e "\nError1! Information not valid !"
         sleep 2
         menu
-        } || {
-       clear
+    } || {
+        clear
         echo -e "Info...\n"
         fun_bot2() {
             screen -r -S "givpn_bot" -X quit >/dev/null 2>&1
@@ -184,14 +173,32 @@ fun_instbot() {
     echo -ne "Do you want to continue ? [y/n/d]: " 
     read resposta
     if [[ "$resposta" = 'd' ]]; then
-    rm -f /etc/.maAsiss/bot.conf
-    menu
-    elif [[ "$resposta" = 'y' ]] || [[ "$resposta" = 'Y' ]]; then
-        fun_botOnOff
-    else
-        echo -e "Returning..."
-        sleep 1
+        rm -f /etc/.maAsiss/bot.conf
         menu
+    elif [[ "$resposta" = 'n' ]]; then
+        exit
+    else
+        fun_botOnOff
     fi
 }
-[[ -f "/etc/.maAsiss/.Shellbtsss" ]] && fun_botOnOff || fun_instbot
+
+menu() {
+    clear
+    echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo -e "          GIVPN BOT PANEL"
+    echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo -e " [1] Activate Bot Panel"
+    echo -e " [2] Start Bot Panel"
+    echo -e " [3] Exit"
+    echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo -ne "Choose an option: "
+    read option
+    case $option in
+    1) fun_instbot ;;
+    2) fun_botOnOff ;;
+    3) exit ;;
+    *) menu ;;
+    esac
+}
+
+menu
